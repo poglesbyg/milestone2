@@ -74,7 +74,6 @@ app.layout = dbc.Container([
     # Patient Segmentation
     dbc.Row([
         dbc.Col(dcc.Graph(id="patient-clusters"), md=6),
-        # dbc.Col(dcc.Graph(id="geographical-risk-map"), md=6),
     ]),
 
     # Actionable Insights
@@ -101,11 +100,23 @@ app.layout = dbc.Container([
     Input("update-button", "n_clicks")
 )
 def update_risk_score_gauge(n_clicks):
+    # Calculate the average risk score using the test set probabilities for class 1
+    y_pred_proba = model.predict_proba(X_test)[:, 1]  # Probability of heart disease (class 1)
+    average_risk_score = y_pred_proba.mean()  # Calculate the average risk score
+
+    # Create gauge chart using the average risk score
     fig = go.Figure(go.Indicator(
         mode="gauge+number",
-        value=0.6,  # Placeholder score
-        title={"text": "Risk Score"},
-        gauge={"axis": {"range": [0, 1]}
+        value=average_risk_score,
+        title={"text": "Average Risk Score"},
+        gauge={
+            "axis": {"range": [0, 1]},
+            "bar": {"color": "red"},
+            "steps": [
+                {"range": [0, 0.3], "color": "green"},
+                {"range": [0.3, 0.6], "color": "yellow"},
+                {"range": [0.6, 1.0], "color": "red"}
+            ],
         }
     ))
     return fig
