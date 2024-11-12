@@ -9,28 +9,17 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-import pandas as pd
-import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-
-# Load the dataset using pandas
+# Load and preprocess the dataset
 url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/heart-disease/processed.cleveland.data'
 column_names = [
     'age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg',
     'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal', 'target'
 ]
-
-# Load dataset into a DataFrame
 df = pd.read_csv(url, names=column_names, na_values='?')
-
-# Handle missing values
 df.dropna(inplace=True)
 
 # Encode categorical variables
-# Convert 'sex' column to numerical values: male -> 1, female -> 0
-df['sex'] = df['sex'].replace({'male': 1, 'female': 0})
-# One-hot encode other categorical features
+df['sex'] = df['sex'].replace({1: 1, 0: 0})  # Convert 'sex' to numeric
 df = pd.get_dummies(df, columns=['cp', 'restecg', 'slope', 'thal'], drop_first=True)
 
 # Split the data into features (X) and target (y)
@@ -85,7 +74,7 @@ app.layout = dbc.Container([
     # Patient Segmentation
     dbc.Row([
         dbc.Col(dcc.Graph(id="patient-clusters"), md=6),
-        dbc.Col(dcc.Graph(id="geographical-risk-map"), md=6),
+        # dbc.Col(dcc.Graph(id="geographical-risk-map"), md=6),
     ]),
 
     # Actionable Insights
@@ -164,17 +153,30 @@ def update_exercise_tolerance_plot(n_clicks):
     Input("update-button", "n_clicks")
 )
 def update_patient_clusters(n_clicks):
-    fig = px.scatter(df, x="age", y="chol", color="target", title="Patient Clusters")
+    fig = px.scatter(df, x="age", y="chol", color=df['target'].astype(str),
+                     title="Patient Clusters by Age and Cholesterol Level")
+    fig.update_layout(coloraxis_colorbar=dict(title="Heart Disease (1=Yes, 0=No)"))
     return fig
 
-# # SHAP Summary Plot
-# @app.callback(
-#     Output("shap-summary-plot", "figure"),
-#     Input("update-button", "n_clicks")
-# )
-# def update_shap_summary(n_clicks):
-#     shap_fig = shap.summary_plot(shap_values, X_train, plot_type="bar", show=False)
-#     return shap_fig
+# SHAP Summary Plot - converting SHAP plot to Plotly compatible format
+@app.callback(
+    Output("shap-summary-plot", "figure"),
+    Input("update-button", "n_clicks")
+)
+def update_shap_summary(n_clicks):
+    # Select SHAP values for class 1 (assuming binary classification with classes 0 and 1)
+    shap_class_1_values = shap_values.values[..., 1]  # Selecting SHAP values for class 1
+    
+    # Convert SHAP values to a DataFrame
+    shap_df = pd.DataFrame(shap_class_1_values, columns=[f'Feature {i}' for i in range(X_train.shape[1])])
+    mean_abs_shap = shap_df.abs().mean().sort_values(ascending=False)
+    
+    # Create Plotly bar chart for feature importance based on SHAP values
+    fig = px.bar(x=mean_abs_shap.index, y=mean_abs_shap.values,
+                 title="Feature Importance based on SHAP Values (Class 1)")
+    fig.update_layout(xaxis_title="Features", yaxis_title="Mean |SHAP Value|",
+                      title="SHAP Summary - Feature Importance for Class 1")
+    return fig
 
 if __name__ == "__main__":
     app.run_server(debug=True)
