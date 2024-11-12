@@ -50,12 +50,18 @@ app.layout = dbc.Container([
     # Update button
     html.Button("Update Dashboard", id="update-button", n_clicks=0),
     
-    # Header Section
+    # Header Section with Gauge and Explanation
     dbc.Row([
         dbc.Col(html.Div([
             html.H4("Dashboard Overview"),
             html.P("Summary of risk predictions and key patient metrics for heart disease."),
-            dcc.Graph(id="risk-score-gauge")
+            dcc.Graph(id="risk-score-gauge"),
+            html.P(
+                "The Risk Score Gauge represents the average probability of heart disease "
+                "among individuals in the test set. A higher score indicates a greater likelihood "
+                "of heart disease. The gauge is color-coded: green (low risk), yellow (moderate risk), "
+                "and red (high risk), helping clinicians quickly assess overall heart disease risk."
+            )
         ]))
     ]),
 
