@@ -1,6 +1,5 @@
 **Heart Disease Prediction: Research Plan**
 
-
 **1. Introduction**
 
 Heart disease is one of the leading causes of mortality worldwide, and early detection plays a crucial role in improving patient outcomes. By analyzing medical data, we can identify patterns and risk factors that contribute to heart disease. This project aims to explore whether we can predict the likelihood of heart disease based on various demographic and medical attributes using data from the UCI Heart Disease dataset. The goal is to leverage data analytics and machine learning to contribute to the understanding and early detection of heart disease.
