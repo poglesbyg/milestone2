@@ -1,5 +1,6 @@
 **Heart Disease Prediction: Research Plan**
 
+
 **1. Introduction**
 
 Heart disease is one of the leading causes of mortality worldwide, and early detection plays a crucial role in improving patient outcomes. By analyzing medical data, we can identify patterns and risk factors that contribute to heart disease. This project aims to explore whether we can predict the likelihood of heart disease based on various demographic and medical attributes using data from the UCI Heart Disease dataset. The goal is to leverage data analytics and machine learning to contribute to the understanding and early detection of heart disease.
@@ -51,7 +52,6 @@ The final deliverable will include:
 - **Jupyter Notebook or Python Script**: This will include all steps of the analysis, from data loading and preprocessing to modeling and evaluation.
 - **Visualizations**: Key plots that illustrate insights from the data, such as distributions, feature importance, and model evaluation metrics.
 - **README.md**: A document explaining the project objectives, the methodology followed, key findings, and how to execute the code to replicate the analysis.
-- **Zipped Archive**: All files will be organized and zipped as `onyen_milestone_02.zip`, containing the notebook, visualizations, and README file.
 
 The final report will summarize findings, such as which factors have the greatest impact on predicting heart disease and how accurately we can identify high-risk patients. This work can serve as a foundation for more advanced analyses or as a proof of concept for a potential healthcare application.
 
